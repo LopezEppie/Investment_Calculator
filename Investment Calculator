@@ -1,0 +1,260 @@
+using System;
+
+namespace Calculator
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {    
+            bool endApp = false;
+            double result = 0;
+           
+            Console.WriteLine("Investment Calculator");
+            Console.WriteLine("-------------------------------------------------------");
+            Console.WriteLine();
+
+            while (!endApp)
+            {
+                Console.WriteLine("Choose form the following list:");
+                Console.WriteLine("S - Stocks");
+                Console.WriteLine("R - Real-Estate");
+                string userchoice = Console.ReadLine();
+                if (userchoice == "S")
+                {
+                    Console.Write("What is your initial investment: $ ");
+                    double InitalInvestment = Convert.ToDouble(Console.ReadLine());
+
+                    Console.Write("How much will you invest per month: $ ");
+                    double PerMonth = Convert.ToDouble(Console.ReadLine());
+
+                    Console.Write("How many years will you be investing?: ");
+                    double Years = Convert.ToDouble(Console.ReadLine());
+
+                    Console.Write("What is your intrest rate?: % ");
+                    double IntrestRate = Convert.ToDouble(Console.ReadLine());
+
+                    Console.WriteLine();
+                    Console.WriteLine("Choose from the following list: ");
+                    Console.WriteLine("\tT - Total Amount");
+                    Console.WriteLine("\tG - Show the growth");
+
+
+
+                    ConsoleKey KeyInput = Console.ReadKey(true).Key;
+
+                    try
+                    {
+                        result = Calculator.DoOperation(InitalInvestment, PerMonth, Years, IntrestRate, KeyInput);
+                        if (double.IsNaN(result))
+                        {
+                            Console.WriteLine("This operation will result in a mathematical error.\n");
+                        }
+                        else Console.WriteLine($"Your result: ${result:#,#}");
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Oh no! An exception occurred trying to do the math.\n - Details: " + e.Message);
+                    }
+
+                    Console.WriteLine("------------------------\n");
+
+                    // Wait for the user to respond before closing.
+                    Console.Write("Press 'n' and Enter to close the app, or press any other key and Enter to continue: ");
+                    if (Console.ReadKey(true).Key == ConsoleKey.N) endApp = true;
+
+                    Console.WriteLine("\n"); // Friendly linespacing.
+                }
+               
+                
+                
+                
+                if (userchoice == "R")
+                {
+                    Console.Write("What is the price of the property: $ ");
+                    double PropertyPrice = Convert.ToDouble(Console.ReadLine());
+
+                    Console.Write("What is your down payment percent: % ");
+                    double DownPayment = Convert.ToDouble(Console.ReadLine());
+
+                    Console.Write("What is the cost of repairs?: $ ");
+                    double Repairs = Convert.ToDouble(Console.ReadLine());
+
+                    Console.Write("What is your loan term (Years): ");
+                    double LoanTerm = Convert.ToDouble(Console.ReadLine());
+
+                    Console.Write("What is your intrest rate: ");
+                    double IntrestRate = Convert.ToDouble(Console.ReadLine());
+
+                    Console.Write("What is your monthly income from property: $ ");
+                    double Income = Convert.ToDouble(Console.ReadLine());
+
+
+                    Console.WriteLine();
+                    Console.WriteLine("Choose from the following list: ");
+                    Console.WriteLine("\tG - Go or No Go");
+                    Console.WriteLine("\tS - Summary");
+
+                    ConsoleKey KeyInput = Console.ReadKey(true).Key;
+
+                    try
+                    {
+                        result = Property.DoOperation(PropertyPrice , DownPayment, Repairs, LoanTerm, IntrestRate, Income, KeyInput);
+                        if (double.IsNaN(result))
+                        {
+                            Console.WriteLine("This operation will result in a mathematical error.\n");
+                        }
+                        else Console.WriteLine($"Your result: ${result:#,#}");
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Oh no! An exception occurred trying to do the math.\n - Details: " + e.Message);
+                    }
+
+                    Console.WriteLine("------------------------\n");
+
+                    // Wait for the user to respond before closing.
+                    Console.Write("Press 'n' and Enter to close the app, or press any other key and Enter to continue: ");
+                    if (Console.ReadKey(true).Key == ConsoleKey.N) endApp = true;
+
+                    Console.WriteLine("\n"); // Friendly linespacing.
+
+                }
+            }
+            return;
+
+
+        }
+
+    }
+    class Calculator
+    {
+        public static double DoOperation(double InIv, double PMon, double Yers3, double IntR4, ConsoleKey KeyInput)
+        {
+            double result = double.NaN;
+            IntR4 = IntR4 / 100;
+            Console.WriteLine();
+
+            switch (KeyInput)
+            {
+                case ConsoleKey.T:
+                    result = TotalAmount(InIv,  PMon, Yers3, IntR4);
+                    break;
+                case ConsoleKey.G:
+                    result = ShowGrowth(InIv, PMon, Yers3, IntR4);
+                    break;
+                default:
+                    break;
+            }
+            return result;
+        }
+        public static double TotalAmount(double StartingValue, double AmmountPerMonth, double Years, double IntrestRate)
+        {
+            double result = 0;
+            double i = 0;
+            double intrest;
+            result = StartingValue;
+            
+            while (i < Years)
+            {
+                result = result + AmmountPerMonth * 12;
+                intrest = result * IntrestRate;
+                result = result + intrest;
+                i++;      
+            }
+            return result;
+        }
+        public static double ShowGrowth(double StartingValue, double AmmountPerMonth, double Years, double IntrestRate)
+        {
+            double result = 0;
+            double i = 0;
+            double intrest;
+            result = StartingValue;
+
+            while (i < Years)
+            {
+                result = result + AmmountPerMonth * 12;
+                intrest = result * IntrestRate;
+                result = result + intrest;
+                Console.WriteLine($"On year {i + 1} you will have ${result:#,#}.");
+                i++;
+            }
+            return result;
+        }
+
+
+    }
+    class Property
+    {
+        public static double DoOperation(double PropertyPrice , double DownPayment, double Repairs, double LoanTerm, double IntrestRate, double Income,ConsoleKey KeyInput)
+        {
+            double result = double.NaN;
+            Console.WriteLine();
+
+            switch (KeyInput)
+            {
+                case ConsoleKey.G:
+                    return GoNoGo(PropertyPrice, Income);
+                    break;
+                case ConsoleKey.S:
+                    return Summary(PropertyPrice, DownPayment, Repairs, LoanTerm, IntrestRate, Income);
+                    break;
+                default:
+                    break;
+            }
+            return result;
+        }
+
+        public static double GoNoGo(double PropertyPrice, double Income)
+        {
+         double onePercent = PropertyPrice * .01;
+            if (onePercent > Income)
+            {
+                Console.WriteLine("This property is a no go!");
+            }
+           else if (onePercent < Income)
+            {
+                Console.WriteLine("This Property is a go!");
+            }
+            return onePercent;
+        }
+
+        public static double Summary(double PropertyPrice, double DownPayment, double Repairs, double LoanTerm, double IntrestRate, double Income)
+        {
+            double NetOperating;
+            double IntrestTotal;
+            double FinancedFor;
+            double MonthlyFees;
+            double CapRate;
+            double TotalPay;
+            double YearlyProfit;
+            DownPayment = DownPayment / 100;
+            IntrestRate = IntrestRate / 100;
+            PropertyPrice = PropertyPrice + Repairs;
+
+            FinancedFor = PropertyPrice - PropertyPrice * DownPayment;
+            Console.WriteLine($"You are financed for ${FinancedFor: #,#}");
+           
+            TotalPay = FinancedFor * (1 + (IntrestRate * LoanTerm));
+            IntrestTotal = TotalPay - FinancedFor;
+            Console.WriteLine($"You will pay a total of ${TotalPay:#,#} for this property");
+
+            MonthlyFees = Income * .2735;
+            Console.WriteLine($"Your monthly fees will be ${MonthlyFees:#,#} ");
+            
+            NetOperating = (Income * 12) - (MonthlyFees * 12) - ((TotalPay / LoanTerm)/12);
+            Console.WriteLine($"Your Yearly Net Operating Income is ${NetOperating:#,#}");
+
+            CapRate = (NetOperating / PropertyPrice) * 100;
+            Console.WriteLine($"Your cap rate is %{CapRate}");
+
+            YearlyProfit = (NetOperating) - (TotalPay/LoanTerm);
+            Console.WriteLine($"Your yearly profit will be ${YearlyProfit:#,#}");
+
+
+            return TotalPay;
+
+        }
+        
+    }
+
+}
